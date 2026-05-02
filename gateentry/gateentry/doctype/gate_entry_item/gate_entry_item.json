@@ -1,0 +1,134 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-05-02 18:31:02.506839",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "purchase_order",
+  "item_code",
+  "item_name",
+  "col1",
+  "ordered_qty",
+  "received_qty",
+  "uom",
+  "quality_status",
+  "description",
+  "no_of_packages",
+  "total_weight",
+  "batch_no",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "columns": 1,
+   "fieldname": "purchase_order",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "PO Reference",
+   "options": "Purchase Order",
+   "read_only": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item Code",
+   "options": "Item",
+   "reqd": 1
+  },
+  {
+   "columns": 2,
+   "fetch_from": "item_code.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Item Name"
+  },
+  {
+   "fieldname": "col1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 1,
+   "fieldname": "ordered_qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Ordered Qty",
+   "precision": "3",
+   "read_only": 1
+  },
+  {
+   "columns": 1,
+   "default": "0",
+   "fieldname": "received_qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Received Qty",
+   "precision": "3",
+   "reqd": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "UOM",
+   "options": "UOM",
+   "reqd": 1
+  },
+  {
+   "columns": 1,
+   "default": "Pending",
+   "fieldname": "quality_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Quality",
+   "options": "\nAccepted\nRejected\nPending"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "default": "1",
+   "fieldname": "no_of_packages",
+   "fieldtype": "Int",
+   "label": "Packages"
+  },
+  {
+   "fieldname": "total_weight",
+   "fieldtype": "Float",
+   "label": "Weight (kg)",
+   "precision": "3"
+  },
+  {
+   "fieldname": "batch_no",
+   "fieldtype": "Data",
+   "label": "Batch No"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-05-02 18:31:02.506839",
+ "modified_by": "Administrator",
+ "module": "Gateentry",
+ "name": "Gate Entry Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
