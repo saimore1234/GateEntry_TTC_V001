@@ -2,48 +2,49 @@
  "actions": [],
  "allow_rename": 1,
  "autoname": "GE-.YYYY.-.MM.-.#####",
- "creation": "2026-05-02 20:19:19.714365",
+ "creation": "2026-05-02 22:30:18.101512",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "basic_section",
+  "sb_basic",
   "gate_entry_date",
-  "posting_time",
-  "col_basic",
+  "entry_time",
+  "cb_basic",
+  "entry_type",
   "status",
-  "po_section",
-  "select_po_btn",
-  "purchase_orders",
-  "supplier_section",
-  "supplier",
+  "sb_party",
   "supplier_name",
-  "transport_section",
+  "contact_person",
+  "mobile_no",
+  "sb_transport",
   "transport_mode",
-  "vehicle_number",
+  "vehicle_no",
   "driver_name",
-  "col_transport",
+  "cb_transport",
   "eway_bill",
-  "transporter",
-  "gate_section",
+  "sb_gate",
   "gate_in_time",
   "gate_out_time",
-  "items_section",
+  "sb_warehouse",
+  "warehouse",
+  "sb_items",
   "items",
-  "summary_section",
+  "sb_summary",
   "total_qty",
-  "col_summary",
+  "cb_summary",
+  "total_packages",
   "total_weight",
+  "sb_remarks",
   "remarks",
-  "remarks_text",
   "amended_from",
-  "amended_from"
+  "selected_pos_display"
  ],
  "fields": [
   {
-   "fieldname": "basic_section",
+   "fieldname": "sb_basic",
    "fieldtype": "Section Break",
-   "label": "Basic Information"
+   "label": "Basic Info"
   },
   {
    "default": "Today",
@@ -55,14 +56,22 @@
   },
   {
    "default": "Now",
-   "fieldname": "posting_time",
+   "fieldname": "entry_time",
    "fieldtype": "Time",
    "label": "Entry Time",
    "reqd": 1
   },
   {
-   "fieldname": "col_basic",
+   "fieldname": "cb_basic",
    "fieldtype": "Column Break"
+  },
+  {
+   "default": "Manual Entry",
+   "fieldname": "entry_type",
+   "fieldtype": "Select",
+   "label": "Entry Type",
+   "options": "PO Based\nManual Entry",
+   "reqd": 1
   },
   {
    "default": "Draft",
@@ -73,57 +82,43 @@
    "read_only": 1
   },
   {
-   "fieldname": "po_section",
+   "fieldname": "sb_party",
    "fieldtype": "Section Break",
-   "label": "Select Purchase Orders"
-  },
-  {
-   "fieldname": "select_po_btn",
-   "fieldtype": "Button",
-   "label": "\u2795 Select Purchase Orders"
-  },
-  {
-   "fieldname": "purchase_orders",
-   "fieldtype": "Table",
-   "label": "Selected Purchase Orders",
-   "options": "PO Tracking",
-   "read_only": 1
-  },
-  {
-   "fieldname": "supplier_section",
-   "fieldtype": "Section Break",
-   "label": "Supplier Information"
-  },
-  {
-   "fieldname": "supplier",
-   "fieldtype": "Link",
-   "label": "Supplier",
-   "options": "Supplier",
-   "read_only": 1
+   "label": "Party Details"
   },
   {
    "fieldname": "supplier_name",
    "fieldtype": "Data",
    "label": "Supplier Name",
-   "read_only": 1
+   "reqd": 1
   },
   {
-   "fieldname": "transport_section",
+   "fieldname": "contact_person",
+   "fieldtype": "Data",
+   "label": "Contact Person"
+  },
+  {
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "label": "Mobile"
+  },
+  {
+   "fieldname": "sb_transport",
    "fieldtype": "Section Break",
-   "label": "Transport Details"
+   "label": "Transport"
   },
   {
    "default": "Road",
    "fieldname": "transport_mode",
    "fieldtype": "Select",
-   "label": "Transport Mode",
-   "options": "\nRoad\nRail\nAir\nSea",
+   "label": "Mode",
+   "options": "Road\nRail\nAir\nSea",
    "reqd": 1
   },
   {
-   "fieldname": "vehicle_number",
+   "fieldname": "vehicle_no",
    "fieldtype": "Data",
-   "label": "Vehicle Number"
+   "label": "Vehicle No"
   },
   {
    "fieldname": "driver_name",
@@ -131,7 +126,7 @@
    "label": "Driver Name"
   },
   {
-   "fieldname": "col_transport",
+   "fieldname": "cb_transport",
    "fieldtype": "Column Break"
   },
   {
@@ -140,12 +135,7 @@
    "label": "E-Way Bill"
   },
   {
-   "fieldname": "transporter",
-   "fieldtype": "Data",
-   "label": "Transporter"
-  },
-  {
-   "fieldname": "gate_section",
+   "fieldname": "sb_gate",
    "fieldtype": "Section Break",
    "label": "Gate Timing"
   },
@@ -162,19 +152,31 @@
    "label": "Gate Out Time"
   },
   {
-   "fieldname": "items_section",
+   "fieldname": "sb_warehouse",
    "fieldtype": "Section Break",
-   "label": "Items Received"
+   "label": "Warehouse"
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "options": "Warehouse",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sb_items",
+   "fieldtype": "Section Break",
+   "label": "Items"
   },
   {
    "fieldname": "items",
    "fieldtype": "Table",
-   "label": "Items (Auto-loaded from POs)",
+   "label": "Items",
    "options": "Gate Entry Item",
-   "read_only": 1
+   "reqd": 1
   },
   {
-   "fieldname": "summary_section",
+   "fieldname": "sb_summary",
    "fieldtype": "Section Break",
    "label": "Summary"
   },
@@ -185,31 +187,30 @@
    "read_only": 1
   },
   {
-   "fieldname": "col_summary",
+   "fieldname": "cb_summary",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_packages",
+   "fieldtype": "Int",
+   "label": "Total Packages",
+   "read_only": 1
   },
   {
    "fieldname": "total_weight",
    "fieldtype": "Float",
-   "label": "Total Weight (kg)",
+   "label": "Total Weight",
    "read_only": 1
   },
   {
-   "fieldname": "remarks",
+   "fieldname": "sb_remarks",
    "fieldtype": "Section Break",
    "label": "Remarks"
   },
   {
-   "fieldname": "remarks_text",
+   "fieldname": "remarks",
    "fieldtype": "Text",
    "label": "Remarks"
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "options": "Gate Entry",
-   "read_only": 1
   },
   {
    "fieldname": "amended_from",
@@ -220,13 +221,21 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "depends_on": "eval:doc.entry_type == 'PO Based'",
+   "description": "Selected Purchase Orders will appear here",
+   "fieldname": "selected_pos_display",
+   "fieldtype": "Small Text",
+   "label": "Selected POs",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-05-02 20:19:19.714365",
+ "modified": "2026-05-02 22:34:15.819903",
  "modified_by": "Administrator",
  "module": "Gateentry",
  "name": "Gate Entry",
