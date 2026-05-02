@@ -1,14 +1,13 @@
 frappe.ui.form.on('Gate Entry', {
     refresh: function(frm) {
-        // Add custom buttons
         if (frm.doc.docstatus === 0) {
             frm.add_custom_button(__('Select POs'), function() {
-                frm.trigger('select_pos');
+                frm.trigger('select_purchase_orders');
             }).addClass('btn-primary');
         }
     },
     
-    select_pos: function(frm) {
+    select_purchase_orders: function(frm) {
         // Get open POs
         frappe.call({
             method: "frappe.client.get_list",
@@ -18,22 +17,21 @@ frappe.ui.form.on('Gate Entry', {
                     docstatus: 1,
                     status: ["in", ["To Receive and Bill", "To Receive"]]
                 },
-                fields: ["name", "supplier", "supplier_name", "transaction_date", "total_qty"],
+                fields: ["name", "supplier", "transaction_date"],
                 limit_page_length: 100
             },
             callback: function(r) {
                 if (r.message && r.message.length > 0) {
-                    let pos = r.message;
                     let dialog = new frappe.ui.Dialog({
                         title: 'Select Purchase Orders',
                         fields: [
                             {
-                                fieldname: 'po_list',
+                                fieldname: 'po_html',
                                 fieldtype: 'HTML',
-                                options: '<div id="po_checkbox_list"></div>'
+                                options: '<div id="po_list"></div>'
                             }
                         ],
-                        primary_action_label: 'Add Selected POs',
+                        primary_action_label: 'Load Items',
                         primary_action: function(values) {
                             let selected = [];
                             $('.po-checkbox:checked').each(function() {
@@ -45,14 +43,21 @@ frappe.ui.form.on('Gate Entry', {
                                 return;
                             }
                             
-                            frm.set_value('selected_pos', selected.join(', '));
-                            dialog.hide();
+                            frappe.show_alert({
+                                message: __('Loading items from selected POs...'),
+                                indicator: 'orange'
+                            });
                             
-                            // Auto fetch items
-                            frm.call('fetch_items').then(() => {
+                            frm.call('add_purchase_orders', {
+                                po_names: JSON.stringify(selected)
+                            }).then(() => {
+                                frm.refresh_field('purchase_orders');
                                 frm.refresh_field('items');
+                                frm.refresh_field('total_qty');
+                                frm.refresh_field('total_weight');
+                                dialog.hide();
                                 frappe.show_alert({
-                                    message: __('Items loaded successfully'),
+                                    message: __('Items loaded successfully!'),
                                     indicator: 'green'
                                 });
                             });
@@ -66,27 +71,25 @@ frappe.ui.form.on('Gate Entry', {
                     html += '<th>PO Number</th>';
                     html += '<th>Supplier</th>';
                     html += '<th>Date</th>';
-                    html += '<th>Total Qty</th>';
                     html += '</tr></thead><tbody>';
                     
-                    $.each(pos, function(i, po) {
+                    $.each(r.message, function(i, po) {
                         html += '<tr>';
                         html += '<td><input type="checkbox" class="po-checkbox" value="' + po.name + '"></td>';
                         html += '<td>' + po.name + '</td>';
-                        html += '<td>' + (po.supplier_name || po.supplier) + '</td>';
+                        html += '<td>' + (po.supplier || '') + '</td>';
                         html += '<td>' + po.transaction_date + '</td>';
-                        html += '<td>' + (po.total_qty || 0) + '</td>';
                         html += '</tr>';
                     });
                     
                     html += '</tbody></table></div>';
-                    dialog.fields_dict.po_list.$wrapper.html(html);
+                    html += '<script>';
+                    html += '$("#select_all").on("change", function() {';
+                    html += '    $(".po-checkbox").prop("checked", $(this).prop("checked"));';
+                    html += '});';
+                    html += '</script>';
                     
-                    // Select all functionality
-                    $('#select_all').on('change', function() {
-                        $('.po-checkbox').prop('checked', $(this).prop('checked'));
-                    });
-                    
+                    dialog.fields_dict.po_html.$wrapper.html(html);
                     dialog.show();
                 } else {
                     frappe.msgprint(__('No open Purchase Orders found'));
@@ -95,14 +98,15 @@ frappe.ui.form.on('Gate Entry', {
         });
     },
     
-    gate_in_time: function(frm) {
-        if (!frm.doc.gate_in_time) {
-            frm.set_value('gate_in_time', frappe.datetime.now_datetime());
+    validate: function(frm) {
+        // Check if items exist
+        if (frm.doc.items && frm.doc.items.length === 0) {
+            frappe.throw(__('Please select Purchase Orders first'));
         }
     }
 });
 
-// Handle items table events
+// Handle received quantity changes
 frappe.ui.form.on('Gate Entry Item', {
     received_qty: function(frm, cdt, cdn) {
         let row = frappe.get_doc(cdt, cdn);
@@ -113,11 +117,7 @@ frappe.ui.form.on('Gate Entry Item', {
         update_summary(frm);
     },
     
-    no_of_packages: function(frm) {
-        update_summary(frm);
-    },
-    
-    total_weight: function(frm) {
+    weight: function(frm) {
         update_summary(frm);
     },
     
@@ -128,16 +128,13 @@ frappe.ui.form.on('Gate Entry Item', {
 
 function update_summary(frm) {
     let total_qty = 0;
-    let total_pkgs = 0;
     let total_wt = 0;
     
     $.each(frm.doc.items || [], function(i, item) {
         total_qty += flt(item.received_qty);
-        total_pkgs += flt(item.no_of_packages);
-        total_wt += flt(item.total_weight);
+        total_wt += flt(item.weight);
     });
     
-    frm.set_value('total_quantity', total_qty);
-    frm.set_value('total_packages', total_pkgs);
+    frm.set_value('total_qty', total_qty);
     frm.set_value('total_weight', total_wt);
 }

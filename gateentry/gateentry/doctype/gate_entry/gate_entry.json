@@ -2,7 +2,7 @@
  "actions": [],
  "allow_rename": 1,
  "autoname": "GE-.YYYY.-.MM.-.#####",
- "creation": "2026-05-02 18:31:33.292008",
+ "creation": "2026-05-02 20:19:19.714365",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -13,45 +13,29 @@
   "col_basic",
   "status",
   "po_section",
-  "select_po_button",
-  "selected_pos",
+  "select_po_btn",
+  "purchase_orders",
   "supplier_section",
   "supplier",
   "supplier_name",
-  "col_supplier",
-  "supplier_delivery_note",
-  "supplier_invoice_no",
   "transport_section",
   "transport_mode",
   "vehicle_number",
   "driver_name",
-  "driver_contact",
   "col_transport",
-  "eway_bill_number",
-  "lr_number",
-  "transporter_name",
+  "eway_bill",
+  "transporter",
   "gate_section",
   "gate_in_time",
   "gate_out_time",
-  "col_gate",
-  "security_personnel",
-  "security_remarks",
-  "warehouse_section",
-  "target_warehouse",
   "items_section",
-  "fetch_items_button",
   "items",
   "summary_section",
-  "total_quantity",
+  "total_qty",
   "col_summary",
-  "total_packages",
   "total_weight",
-  "quality_section",
-  "inspection_required",
-  "inspected_by",
-  "quality_remarks",
-  "additional_section",
   "remarks",
+  "remarks_text",
   "amended_from",
   "amended_from"
  ],
@@ -59,7 +43,7 @@
   {
    "fieldname": "basic_section",
    "fieldtype": "Section Break",
-   "label": "\ud83d\udccb Basic Information"
+   "label": "Basic Information"
   },
   {
    "default": "Today",
@@ -84,32 +68,31 @@
    "default": "Draft",
    "fieldname": "status",
    "fieldtype": "Select",
-   "in_list_view": 1,
    "label": "Status",
-   "options": "Draft\nIn Progress\nCompleted\nRejected",
+   "options": "Draft\nCompleted\nRejected",
    "read_only": 1
   },
   {
    "fieldname": "po_section",
    "fieldtype": "Section Break",
-   "label": "\ud83d\udce6 Purchase Order Selection"
+   "label": "Select Purchase Orders"
   },
   {
-   "fieldname": "select_po_button",
+   "fieldname": "select_po_btn",
    "fieldtype": "Button",
    "label": "\u2795 Select Purchase Orders"
   },
   {
-   "description": "Selected Purchase Orders will appear here",
-   "fieldname": "selected_pos",
-   "fieldtype": "Small Text",
-   "label": "Selected POs",
+   "fieldname": "purchase_orders",
+   "fieldtype": "Table",
+   "label": "Selected Purchase Orders",
+   "options": "PO Tracking",
    "read_only": 1
   },
   {
    "fieldname": "supplier_section",
    "fieldtype": "Section Break",
-   "label": "\ud83c\udfe2 Supplier Information"
+   "label": "Supplier Information"
   },
   {
    "fieldname": "supplier",
@@ -125,29 +108,15 @@
    "read_only": 1
   },
   {
-   "fieldname": "col_supplier",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "supplier_delivery_note",
-   "fieldtype": "Data",
-   "label": "Supplier DN No"
-  },
-  {
-   "fieldname": "supplier_invoice_no",
-   "fieldtype": "Data",
-   "label": "Supplier Invoice No"
-  },
-  {
    "fieldname": "transport_section",
    "fieldtype": "Section Break",
-   "label": "\ud83d\ude9a Transport Details"
+   "label": "Transport Details"
   },
   {
    "default": "Road",
    "fieldname": "transport_mode",
    "fieldtype": "Select",
-   "label": "Mode of Transport",
+   "label": "Transport Mode",
    "options": "\nRoad\nRail\nAir\nSea",
    "reqd": 1
   },
@@ -162,33 +131,23 @@
    "label": "Driver Name"
   },
   {
-   "fieldname": "driver_contact",
-   "fieldtype": "Data",
-   "label": "Driver Contact"
-  },
-  {
    "fieldname": "col_transport",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "eway_bill_number",
+   "fieldname": "eway_bill",
    "fieldtype": "Data",
-   "label": "E-Way Bill Number"
+   "label": "E-Way Bill"
   },
   {
-   "fieldname": "lr_number",
+   "fieldname": "transporter",
    "fieldtype": "Data",
-   "label": "LR/GR Number"
-  },
-  {
-   "fieldname": "transporter_name",
-   "fieldtype": "Data",
-   "label": "Transporter Name"
+   "label": "Transporter"
   },
   {
    "fieldname": "gate_section",
    "fieldtype": "Section Break",
-   "label": "\u23f0 Gate Entry Details"
+   "label": "Gate Timing"
   },
   {
    "default": "Now",
@@ -203,59 +162,26 @@
    "label": "Gate Out Time"
   },
   {
-   "fieldname": "col_gate",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "security_personnel",
-   "fieldtype": "Link",
-   "label": "Security Personnel",
-   "options": "User"
-  },
-  {
-   "fieldname": "security_remarks",
-   "fieldtype": "Small Text",
-   "label": "Security Remarks"
-  },
-  {
-   "fieldname": "warehouse_section",
-   "fieldtype": "Section Break",
-   "label": "\ud83d\udce6 Warehouse Details"
-  },
-  {
-   "fieldname": "target_warehouse",
-   "fieldtype": "Link",
-   "label": "Target Warehouse",
-   "options": "Warehouse",
-   "reqd": 1
-  },
-  {
    "fieldname": "items_section",
    "fieldtype": "Section Break",
-   "label": "\ud83d\udccb Items Received"
-  },
-  {
-   "fieldname": "fetch_items_button",
-   "fieldtype": "Button",
-   "label": "\ud83d\udd04 Load Items"
+   "label": "Items Received"
   },
   {
    "fieldname": "items",
    "fieldtype": "Table",
-   "label": "Items",
+   "label": "Items (Auto-loaded from POs)",
    "options": "Gate Entry Item",
-   "reqd": 1
+   "read_only": 1
   },
   {
    "fieldname": "summary_section",
    "fieldtype": "Section Break",
-   "label": "\ud83d\udcca Summary"
+   "label": "Summary"
   },
   {
-   "fieldname": "total_quantity",
+   "fieldname": "total_qty",
    "fieldtype": "Float",
    "label": "Total Quantity",
-   "precision": "3",
    "read_only": 1
   },
   {
@@ -263,47 +189,18 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "total_packages",
-   "fieldtype": "Int",
-   "label": "Total Packages",
-   "read_only": 1
-  },
-  {
    "fieldname": "total_weight",
    "fieldtype": "Float",
    "label": "Total Weight (kg)",
-   "precision": "3",
    "read_only": 1
   },
   {
-   "fieldname": "quality_section",
-   "fieldtype": "Section Break",
-   "label": "\ud83d\udd0d Quality Inspection"
-  },
-  {
-   "default": "0",
-   "fieldname": "inspection_required",
-   "fieldtype": "Check",
-   "label": "Inspection Required"
-  },
-  {
-   "fieldname": "inspected_by",
-   "fieldtype": "Link",
-   "label": "Inspected By",
-   "options": "User"
-  },
-  {
-   "fieldname": "quality_remarks",
-   "fieldtype": "Text",
-   "label": "Quality Remarks"
-  },
-  {
-   "fieldname": "additional_section",
-   "fieldtype": "Section Break",
-   "label": "\ud83d\udcdd Additional Information"
-  },
-  {
    "fieldname": "remarks",
+   "fieldtype": "Section Break",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "remarks_text",
    "fieldtype": "Text",
    "label": "Remarks"
   },
@@ -311,7 +208,6 @@
    "fieldname": "amended_from",
    "fieldtype": "Link",
    "label": "Amended From",
-   "no_copy": 1,
    "options": "Gate Entry",
    "read_only": 1
   },
@@ -330,14 +226,13 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-05-02 18:31:33.292008",
+ "modified": "2026-05-02 20:19:19.714365",
  "modified_by": "Administrator",
  "module": "Gateentry",
  "name": "Gate Entry",
  "owner": "Administrator",
  "permissions": [
   {
-   "cancel": 1,
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -368,6 +263,5 @@
  "rows_threshold_for_grid_search": 20,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
- "track_changes": 1
+ "states": []
 }
